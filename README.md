@@ -9,8 +9,8 @@ This project analyzes health data from Apple Watch and Fitbit devices to identif
 
 ## Project Files
 - `wearable_health_data_analysis.Rmd`: R Markdown file with the full code.
-- `output/`: Contains the rendered HTML report.
-- `data/`: Includes the cleaned dataset used for analysis.
+- `wearable_health_data_analysis.knit.md`: Contains the rendered output.
+- `data/`: Includes the dataset used for analysis from Kaggle (https://www.kaggle.com/datasets/aleespinosa/apple-watch-and-fitbit-data/data)
 
 ## Getting Started
 To replicate this analysis:

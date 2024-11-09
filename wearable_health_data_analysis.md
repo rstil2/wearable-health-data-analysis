@@ -15,7 +15,7 @@ engagement, and personalized health recommendations.
 
 ``` r
 # Load the dataset
-data <- read.csv('/Users/stillwell/Documents/R/Apple Watch and Fitbit Health Data Portfolio/data/aw_fb_data.csv')
+data <- read.csv('data/aw_fb_data.csv')
 
 # Initial data check
 str(data)
