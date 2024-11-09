@@ -20,3 +20,7 @@ To replicate this analysis:
 
 ## Contact
 For questions or collaboration, connect with me on https://www.linkedin.com/in/r-craig-stillwell-1bb2752b/ or via GitHub Issues.
+
+## References
+These data were collected as part of this dataset:
+Fuller, Daniel, 2020, "Replication Data for: Using machine learning methods to predict physical activity types with Apple Watch and Fitbit data using indirect calorimetry as the criterion.", https://doi.org/10.7910/DVN/ZS2Z2J, Harvard Dataverse, V1
