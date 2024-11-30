@@ -165,13 +165,13 @@ r2_value <- cor(test_data$hear_rate, predictions_hr)^2
 cat("Root Mean Square Error (RMSE):", rmse_value, "\n")
 ```
 
-    ## Root Mean Square Error (RMSE): 9.361865
+    ## Root Mean Square Error (RMSE): 9.365971
 
 ``` r
 cat("R-squared:", r2_value, "\n")
 ```
 
-    ## R-squared: 0.895882
+    ## R-squared: 0.8955892
 
 ``` r
 varImpPlot(rf_model_hr, main = "Feature Importance in Predicting Heart Rate")
@@ -200,52 +200,52 @@ print(conf_matrix_activity)
     ## 
     ##                 Reference
     ## Prediction       Lying Running 3 METs Running 5 METs Running 7 METs
-    ##   Lying            233             13              8              2
-    ##   Running 3 METs    22            170              4              0
-    ##   Running 5 METs     3              6            167              8
-    ##   Running 7 METs     5              1             13            173
-    ##   Self Pace walk     4              5              3              1
-    ##   Sitting           19              2              4             10
+    ##   Lying            237             15             11              3
+    ##   Running 3 METs    19            168              3              0
+    ##   Running 5 METs     3              5            166              8
+    ##   Running 7 METs     5              0             13            173
+    ##   Self Pace walk     4              7              2              1
+    ##   Sitting           18              2              4              9
     ##                 Reference
     ## Prediction       Self Pace walk Sitting
-    ##   Lying                       9      21
-    ##   Running 3 METs              4       2
-    ##   Running 5 METs              6      11
-    ##   Running 7 METs              5      18
-    ##   Self Pace walk            151       7
-    ##   Sitting                     9     133
+    ##   Lying                       8      20
+    ##   Running 3 METs              3       1
+    ##   Running 5 METs              5      11
+    ##   Running 7 METs              5      20
+    ##   Self Pace walk            154       8
+    ##   Sitting                     9     132
     ## 
     ## Overall Statistics
     ##                                           
-    ##                Accuracy : 0.8203          
-    ##                  95% CI : (0.7979, 0.8412)
+    ##                Accuracy : 0.8227          
+    ##                  95% CI : (0.8004, 0.8435)
     ##     No Information Rate : 0.2284          
-    ##     P-Value [Acc > NIR] : <2e-16          
+    ##     P-Value [Acc > NIR] : < 2.2e-16       
     ##                                           
-    ##                   Kappa : 0.7831          
+    ##                   Kappa : 0.7859          
     ##                                           
-    ##  Mcnemar's Test P-Value : 0.1694          
+    ##  Mcnemar's Test P-Value : NA              
     ## 
     ## Statistics by Class:
     ## 
     ##                      Class: Lying Class: Running 3 METs Class: Running 5 METs
-    ## Sensitivity                0.8147                0.8629                0.8392
-    ## Specificity                0.9451                0.9697                0.9677
-    ## Pos Pred Value             0.8147                0.8416                0.8308
-    ## Neg Pred Value             0.9451                0.9743                0.9696
+    ## Sensitivity                0.8287                0.8528                0.8342
+    ## Specificity                0.9410                0.9754                0.9696
+    ## Pos Pred Value             0.8061                0.8660                0.8384
+    ## Neg Pred Value             0.9489                0.9726                0.9687
     ## Prevalence                 0.2284                0.1573                0.1589
-    ## Detection Rate             0.1861                0.1358                0.1334
-    ## Detection Prevalence       0.2284                0.1613                0.1605
-    ## Balanced Accuracy          0.8799                0.9163                0.9035
+    ## Detection Rate             0.1893                0.1342                0.1326
+    ## Detection Prevalence       0.2348                0.1550                0.1581
+    ## Balanced Accuracy          0.8848                0.9141                0.9019
     ##                      Class: Running 7 METs Class: Self Pace walk Class: Sitting
-    ## Sensitivity                         0.8918                0.8207         0.6927
-    ## Specificity                         0.9603                0.9813         0.9585
-    ## Pos Pred Value                      0.8047                0.8830         0.7514
-    ## Neg Pred Value                      0.9797                0.9695         0.9451
+    ## Sensitivity                         0.8918                0.8370         0.6875
+    ## Specificity                         0.9594                0.9794         0.9604
+    ## Pos Pred Value                      0.8009                0.8750         0.7586
+    ## Neg Pred Value                      0.9797                0.9721         0.9443
     ## Prevalence                          0.1550                0.1470         0.1534
-    ## Detection Rate                      0.1382                0.1206         0.1062
-    ## Detection Prevalence                0.1717                0.1366         0.1414
-    ## Balanced Accuracy                   0.9260                0.9010         0.8256
+    ## Detection Rate                      0.1382                0.1230         0.1054
+    ## Detection Prevalence                0.1725                0.1406         0.1390
+    ## Balanced Accuracy                   0.9256                0.9082         0.8239
 
 ``` r
 varImpPlot(rf_model_activity, main = "Feature Importance in Predicting Activity Type")
