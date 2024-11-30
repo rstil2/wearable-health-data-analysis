@@ -1,0 +1,146 @@
+---
+title: "Wearable Health Data Analysis: Turning Data into Actionable Health Insights"
+author: "Dr. R. Craig Stillwell"
+output: github_document
+---
+
+## Introduction
+
+This report presents a comprehensive data analysis using wearable health data from Apple Watch and Fitbit. The analysis includes data preparation, clustering to identify user patterns, and predictive modeling to classify activity types and predict heart rate. The insights derived from this analysis are aimed at helping users make informed health decisions, improving device algorithms, and supporting the creation of personalized health recommendations.
+
+```{r setup, include=FALSE}
+# Load required packages and install if missing
+packages <- c("tidyverse", "cluster", "factoextra", "caret", "randomForest", "Metrics", "NbClust")
+install.packages(setdiff(packages, rownames(installed.packages())))
+
+library(NbClust)
+library(tidyverse)
+library(cluster)
+library(factoextra)
+library(caret)
+library(randomForest)
+library(Metrics)
+```
+## Data Preparation
+
+```{r data-cleaning, echo=TRUE}
+# Load the dataset
+data <- read.csv('data/aw_fb_data.csv')
+
+# Initial data check
+str(data)
+summary(data)
+colSums(is.na(data))
+
+# Data Cleaning: Remove columns with all missing values and drop rows without an activity label
+data <- data %>%
+  select_if(~ !all(is.na(.))) %>%  # Remove columns with all missing values
+  mutate(activity = as.character(activity)) %>%
+  drop_na(activity)                # Drop rows with NA in 'activity'
+
+# Save cleaned data
+write.csv(data, file = "/Users/stillwell/Documents/R/Apple Watch and Fitbit Health Data Portfolio/data/cleaned_aw_fb_data.csv")
+```
+## Clustering Analysis
+
+We use K-means clustering to explore distinct patterns in heart rate and step count, identifying user groups with similar health metrics, which may represent different activity and lifestyle patterns.
+
+```{r clustering, echo=TRUE}
+# Select relevant columns and normalize data for clustering
+clustering_data <- data %>%
+  select(hear_rate, steps, resting_heart)
+clustering_data_normalized <- scale(clustering_data)
+
+# Determine the optimal number of clusters using silhouette method and save result
+silhouette_result <- NbClust(clustering_data_normalized, distance = "euclidean", min.nc = 2, max.nc = 10, method = "kmeans", index = "silhouette")
+
+# Retrieve the best number of clusters
+optimal_clusters <- silhouette_result$Best.nc[1]
+print(paste("Optimal number of clusters based on silhouette method:", optimal_clusters))
+
+# Visualize with fviz_nbclust to confirm
+fviz_nbclust(clustering_data_normalized, kmeans, method = "silhouette") +
+  labs(title = "Optimal Number of Clusters (Silhouette Method)")
+```
+## Optimal Cluster Count
+
+The silhouette method suggests an optimal cluster count of four, indicating distinct user profiles, which could represent different lifestyle patterns (e.g., sedentary or moderately active) and health states.
+```{r kmean, echo=TRUE}
+# Perform K-means clustering and add results to data
+set.seed(123)
+kmeans_result <- kmeans(clustering_data_normalized, centers = 4, nstart = 25)
+data$cluster <- as.factor(kmeans_result$cluster)
+
+# Visualize clustering results
+ggplot(data, aes(x = steps, y = hear_rate, color = cluster, shape = activity)) +
+  geom_point(alpha = 0.7, size = 3) +
+  theme_minimal(base_size = 15) +
+  labs(
+    title = "K-Means Clustering of Heart Rate Patterns",
+    subtitle = "Identifying Patterns in Wearable Data Using K-Means Clustering",
+    x = "Steps",
+    y = "Heart Rate"
+  ) +
+  scale_color_brewer(palette = "Set1") +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    plot.subtitle = element_text(hjust = 0.5, size = 12, face = "italic"),
+    legend.position = "bottom",
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10)
+  )
+```
+## Predictive Modeling
+
+Model 1: Predicting Heart Rate
+
+Using a Random Forest model to predict heart rate based on wearable data metrics provides insights for both users and developers to understand and anticipate health changes.
+```{r predictive-modeling, echo=TRUE}
+# Feature selection and train-test split
+features <- data %>%
+  select(steps, calories, intensity_karvonen, sd_norm_heart, steps_times_distance, activity, hear_rate) %>%
+  drop_na()
+features$activity <- as.factor(features$activity)
+set.seed(123)
+trainIndex <- createDataPartition(features$hear_rate, p = 0.8, list = FALSE)
+train_data <- features[trainIndex, ]
+test_data <- features[-trainIndex, ]
+
+# Train a Random Forest model for heart rate prediction
+rf_model_hr <- randomForest(hear_rate ~ ., data = train_data, importance = TRUE)
+predictions_hr <- predict(rf_model_hr, newdata = test_data)
+rmse_value <- rmse(test_data$hear_rate, predictions_hr)
+r2_value <- cor(test_data$hear_rate, predictions_hr)^2
+
+# Print formatted RMSE and R-squared values
+rmse_value <- rmse(test_data$hear_rate, predictions_hr)
+r2_value <- cor(test_data$hear_rate, predictions_hr)^2
+
+# Print results with formatted output
+print(sprintf("Model Metrics:\n- Root Mean Square Error (RMSE): %.2f\n- R-squared (R²): %.3f", rmse_value, r2_value))
+```
+## Model 1
+
+The model achieved an RMSE of 9.36 and an R² of 0.896, demonstrating that heart rate can be effectively predicted from activity metrics. This information could improve device algorithms for health tracking.
+
+## Predictive Modeling
+
+Model 2: Classifying Activity Type
+
+Using a Random Forest classifier to identify activity types based on health data provides actionable insights into daily activity levels, encouraging users to optimize their health routines.
+```{r confusion-matrix, echo=TRUE}
+# Train a Random Forest model for activity classification
+rf_model_activity <- randomForest(activity ~ ., data = train_data, importance = TRUE)
+predictions_activity <- predict(rf_model_activity, newdata = test_data)
+conf_matrix_activity <- confusionMatrix(predictions_activity, test_data$activity)
+print(conf_matrix_activity)
+varImpPlot(rf_model_activity, main = "Feature Importance in Predicting Activity Type")
+```
+## 
+Model 2
+
+The confusion matrix displays correct and incorrect predictions for each activity type, showing high accuracy, especially for high-intensity activities. This classification model helps improve activity tracking and distinguish between similar activity types.
+
+Conclusion
+
+This analysis demonstrates how wearable health data can reveal patterns in user activity and predict key metrics like heart rate. These insights support the development of personalized health recommendations and improve wearable technology, allowing users to make informed health decisions based on data-driven insights.
