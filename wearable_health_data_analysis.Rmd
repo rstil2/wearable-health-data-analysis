@@ -1,11 +1,7 @@
 ---
 title: "Wearable Health Data Analysis"
 author: "Dr. R. Craig Stillwell"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    theme: cerulean
+output: github_document
 ---
 
 ## Introduction
